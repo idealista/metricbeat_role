@@ -1,0 +1,49 @@
+---
+## General
+# Version
+metricbeat_version: 8.2.2
+
+# Package config
+metricbeat_package_dependencies:
+  - apt-transport-https
+
+metricbeat_package_state: present
+metricbeat_major_version: "{{ metricbeat_version.split('.')[0] }}"
+metricbeat_gpg_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+metricbeat_ppa_source: "deb https://artifacts.elastic.co/packages/{{ metricbeat_major_version }}.x/apt stable main"
+
+# Installation path
+metricbeat_home_path: /usr/share/metricbeat
+metricbeat_config_path: /etc/metricbeat
+metricbeat_data_path: /var/lib/metricbeat
+metricbeat_logs_path: /var/log/metricbeat
+metricbeat_config_file: /etc/metricbeat/metricbeat.yml
+metricbeat_skeleton_paths:
+  - "{{ metricbeat_home_path }}"
+  - "{{ metricbeat_config_path }}"
+  - "{{ metricbeat_data_path }}"
+  - "{{ metricbeat_logs_path }}"
+  - "{{ metricbeat_service_config_path }}"
+
+## Service options
+# Owner
+metricbeat_user: metricbeat
+# Optional uid for metricbeat_user
+# metricbeat_uid: 995
+metricbeat_group: metricbeat
+# Optional gid for metricbeat_group
+# metricbeat_gid: 995
+metricbeat_user_shell: /usr/sbin/nologin
+
+# Start on boot
+metricbeat_service_enabled: True
+# Current state: started, stopped
+metricbeat_service_state: started
+
+# Configuration
+metricbeat_config_template_path: "{{ role_path }}/templates/config"
+
+# Additional systemd path for custom service config.
+# More options here: https://www.elastic.co/guide/en/beats/metricbeat/current/running-with-systemd.html#_customize_systemd_unit_for_metricbeat
+metricbeat_service_config_path: /etc/systemd/system/metricbeat.service.d
+metricbeat_service_config_file: "{{ metricbeat_service_config_path }}/default.conf"

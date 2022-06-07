@@ -1,0 +1,27 @@
+---
+dist: xenial
+language: python
+python: "3.9"
+os: linux
+services:
+  - docker
+install:
+  - pip install pipenv
+  - pipenv sync
+env:
+  jobs:
+    - MOLECULE_DISTRO=debian:buster-slim METRICBEAT_VERSION=8.2.2
+    - MOLECULE_DISTRO=debian:bullseye-slim METRICBEAT_VERSION=8.2.2
+    - MOLECULE_DISTRO=debian:buster-slim METRICBEAT_VERSION=7.17.4
+    - MOLECULE_DISTRO=debian:bullseye-slim METRICBEAT_VERSION=7.17.4
+script:
+  - pipenv run molecule test --all
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  email:
+    if: branch = master
+    recipients:
+      - desarrollo.benders@idealista.com
+    on_success: change
+    on_failure: always

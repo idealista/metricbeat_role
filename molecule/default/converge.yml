@@ -1,0 +1,5 @@
+---
+- name: Converge
+  hosts: metricbeat_group
+  roles:
+    - role: metricbeat_role

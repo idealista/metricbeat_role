@@ -1,0 +1,2 @@
+---
+metricbeat_config_template_path: "{{ playbook_dir }}/templates/config"

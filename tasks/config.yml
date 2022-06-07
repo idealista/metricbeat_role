@@ -1,0 +1,12 @@
+---
+- name: METRICBEAT | Generate config for metricbeat
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ metricbeat_config_path }}/{{ item | basename }}"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    mode: '0644'
+  with_fileglob:
+    - "{{ metricbeat_config_template_path }}/*.yml"
+  notify:
+    - restart metricbeat

@@ -1,0 +1,15 @@
+---
+- name: METRICBEAT | Install
+  ansible.builtin.import_tasks: install.yml
+  tags:
+    - metricbeat_install
+
+- name: METRICBEAT | Configure
+  ansible.builtin.import_tasks: config.yml
+  tags:
+    - metricbeat_configure
+
+- name: METRICBEAT | Service
+  ansible.builtin.import_tasks: service.yml
+  tags:
+    - metricbeat_service

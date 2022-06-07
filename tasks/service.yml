@@ -1,0 +1,21 @@
+---
+- name: METRICBEAT | Configure options for metricbeat service
+  ansible.builtin.template:
+    src: metricbeat_config_service.j2
+    dest: "{{ metricbeat_service_config_file }}"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    mode: '0644'
+  notify: restart metricbeat
+  tags:
+    - metricbeat_service
+
+- name: METRICBEAT | Configuring service
+  ansible.builtin.systemd:
+    name: metricbeat
+    state: "{{ metricbeat_service_state }}"
+    enabled: "{{ metricbeat_service_enabled }}"
+    daemon_reload: yes
+  tags:
+    - metricbeat_service
+  register: metricbeat_service_output

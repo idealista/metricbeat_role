@@ -1,0 +1,51 @@
+---
+service:
+  metricbeat:
+    enabled: true
+    running: true
+
+process:
+  metricbeat:
+    running: true
+
+user:
+  metricbeat:
+    exists: true
+    groups:
+      - metricbeat
+    shell: /usr/sbin/nologin
+    uid:
+      lt: 1000
+
+group:
+  metricbeat:
+    exists: true
+    gid:
+      lt: 1000
+
+file:
+  {{ metricbeat_config_file }}:
+    owner: metricbeat
+    group: metricbeat
+    exists: true
+    filetype: file
+  {{ metricbeat_home_path }}:
+    owner: metricbeat
+    group: metricbeat
+    exists: true
+    filetype: directory
+  {{ metricbeat_config_path }}:
+    owner: metricbeat
+    group: metricbeat
+    exists: true
+    filetype: directory
+  {{ metricbeat_data_path }}:
+    owner: metricbeat
+    group: metricbeat
+    exists: true
+    filetype: directory
+  {{ metricbeat_logs_path }}:
+    owner: metricbeat
+    group: metricbeat
+    exists: true
+    filetype: directory

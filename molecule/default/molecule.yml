@@ -1,0 +1,35 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  yamllint -f colored .
+  ansible-lint --force-color .
+platforms:
+  - name: metricbeat
+    groups:
+      - metricbeat_group
+    image: ${MOLECULE_DISTRO:-debian:bullseye-slim}
+    privileged: false
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    command: '/lib/systemd/systemd'
+    stop_signal: 'RTMIN+3'
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_FORCE_COLOR: 1
+    PY_COLORS: 1
+  inventory:
+    group_vars:
+      metricbeat_group:
+        metricbeat_version: ${METRICBEAT_VERSION:-8.2.0}
+verifier:
+  name: ansible

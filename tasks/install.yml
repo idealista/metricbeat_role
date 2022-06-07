@@ -1,0 +1,76 @@
+---
+- name: METRICBEAT | Ensure metricbeat group
+  ansible.builtin.group:
+    name: "{{ metricbeat_group }}"
+    gid: "{{ metricbeat_gid | default(omit) }}"
+    system: yes
+    state: present
+  tags:
+    - metricbeat_install
+
+- name: METRICBEAT | Ensure metricbeat user
+  ansible.builtin.user:
+    name: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    uid: "{{ metricbeat_uid | default(omit) }}"
+    system: yes
+    shell: "{{ metricbeat_user_shell }}"
+    createhome: no
+  tags:
+    - metricbeat_install
+
+- name: METRICBEAT | Ensure skeleton paths
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    mode: u=rwX,g=rX,o=rX
+    state: directory
+  loop: "{{ metricbeat_skeleton_paths }}"
+  tags:
+    - metricbeat_install
+
+- name: METRICBEAT | Add package dependencies
+  ansible.builtin.apt:
+    name: "{{ metricbeat_package_dependencies }}"
+    state: present
+    update_cache: true
+  tags:
+    - metricbeat_install
+
+- name: METRICBEAT | Add gpg key
+  ansible.builtin.apt_key:
+    url: "{{ metricbeat_gpg_key }}"
+    state: present
+  tags:
+    - metricbeat_install
+
+- name: METRICBEAT | Add ppa repository
+  ansible.builtin.apt_repository:
+    repo: "{{ metricbeat_ppa_source }}"
+    state: present
+    filename: metricbeat
+  tags:
+    - metricbeat_install
+
+- name: METRICBEAT | Install metricbeat without version defined and {{ metricbeat_package_state }} state
+  ansible.builtin.apt:
+    name: "metricbeat"
+    update_cache: true
+    state: "{{ metricbeat_package_state }}"
+  notify:
+    - restart metricbeat
+  when: metricbeat_version is not defined
+  tags:
+    - metricbeat_install
+
+- name: METRICBEAT | Install metricbeat {{ metricbeat_version }} and {{ metricbeat_package_state }} state
+  ansible.builtin.apt:
+    name: "metricbeat={{ metricbeat_version }}"
+    update_cache: true
+    state: "{{ metricbeat_package_state }}"
+  notify:
+    - restart metricbeat
+  when: metricbeat_version is defined
+  tags:
+    - metricbeat_install

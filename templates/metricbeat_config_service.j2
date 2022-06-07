@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+[Service]
+Environment="BEAT_PATH_OPTS=--path.home {{ metricbeat_home_path }} --path.config {{ metricbeat_config_path }} --path.data {{ metricbeat_data_path }} --path.logs {{ metricbeat_logs_path }}"
+Environment="BEAT_CONFIG_OPTS=--c {{ metricbeat_config_file }}"
+User={{ metricbeat_user }}
+Group={{ metricbeat_group }}
