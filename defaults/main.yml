@@ -6,6 +6,7 @@ metricbeat_version: 8.2.2
 # Package config
 metricbeat_package_dependencies:
   - apt-transport-https
+  - gpg
 
 metricbeat_package_state: present
 metricbeat_major_version: "{{ metricbeat_version.split('.')[0] }}"
